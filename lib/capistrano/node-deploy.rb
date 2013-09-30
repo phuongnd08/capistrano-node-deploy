@@ -57,7 +57,9 @@ respawn limit 99 5
 script
     echo $$ > #{shared_path}/pids/#{application}.pid
 
-    cd #{current_path} && NODE_ENV=#{node_env} #{app_environment} #{node_binary} #{current_path}/#{app_command} 2>> #{shared_path}/#{node_env}.err.log 1>> #{shared_path}/#{node_env}.out.log
+    cd #{current_path}
+
+    exec NODE_ENV=#{node_env} #{app_environment} #{node_binary} #{current_path}/#{app_command} 2>> #{shared_path}/#{node_env}.err.log 1>> #{shared_path}/#{node_env}.out.log
 end script
 EOD
   }
