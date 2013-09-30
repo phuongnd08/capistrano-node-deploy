@@ -39,6 +39,7 @@ Capistrano::Configuration.instance(:must_exist).load do |configuration|
   set :node_binary, "/usr/bin/node" unless defined? node_binary
   set :node_env, "production" unless defined? node_env
   set :node_user, "deploy" unless defined? node_user
+  set :pid_file, "#{shared_path}/pids/#{application}.pid" unless defined? pid_file
 
   set :upstart_job_name, lambda { "#{application}-#{node_env}" } unless defined? upstart_job_name
   set :upstart_file_path, lambda { "/etc/init/#{upstart_job_name}.conf" } unless defined? upstart_file_path
@@ -55,11 +56,7 @@ respawn
 respawn limit 99 5
 
 script
-    echo $$ > #{shared_path}/pids/#{application}.pid
-
-    cd #{current_path}
-
-    exec NODE_ENV=#{node_env} #{app_environment} #{node_binary} #{current_path}/#{app_command} 2>> #{shared_path}/#{node_env}.err.log 1>> #{shared_path}/#{node_env}.out.log
+    cd #{current_path} && PID=#{pid_file} NODE_ENV=#{node_env} #{app_environment} #{node_binary} #{current_path}/#{app_command} 2>> #{shared_path}/#{node_env}.err.log 1>> #{shared_path}/#{node_env}.out.log
 end script
 EOD
   }
