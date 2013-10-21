@@ -32,17 +32,17 @@ Capistrano::Configuration.instance(:must_exist).load do |configuration|
 
   package_json = MultiJson.load(File.open("package.json").read) rescue {}
 
-  set :application, package_json["name"] unless defined? application
-  set :app_command, package_json["main"] || "index.js" unless defined? app_command
-  set :app_environment, "" unless defined? app_environment
+  set :application, package_json["name"] unless exists? :application
+  set :app_command, package_json["main"] || "index.js" unless exists? :app_command
+  set :app_environment, "" unless exists? :app_environment
 
-  set :node_binary, "/usr/bin/node" unless defined? node_binary
-  set :node_env, "production" unless defined? node_env
-  set :node_user, "deploy" unless defined? node_user
-  set :pid_file, "#{application}.pid" unless defined? pid_file
+  set :node_binary, "/usr/bin/node" unless exists? :node_binary
+  set :node_env, "production" unless exists? :node_env
+  set :node_user, "deploy" unless exists? :node_user
+  set :pid_file, "#{application}.pid" unless exists? :pid_file
 
-  set :upstart_job_name, lambda { "#{application}-#{node_env}" } unless defined? upstart_job_name
-  set :upstart_file_path, lambda { "/etc/init/#{upstart_job_name}.conf" } unless defined? upstart_file_path
+  set :upstart_job_name, lambda { "#{application}-#{node_env}" } unless exists? :upstart_job_name
+  set :upstart_file_path, lambda { "/etc/init/#{upstart_job_name}.conf" } unless exists? :upstart_file_path
   _cset(:upstart_file_contents) {
 <<EOD
 #!upstart
