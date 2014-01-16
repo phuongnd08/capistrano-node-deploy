@@ -36,10 +36,18 @@ Capistrano::Configuration.instance(:must_exist).load do |configuration|
   set :app_command, package_json["main"] || "index.js" unless exists? :app_command
   set :app_environment, "" unless exists? :app_environment
 
-  set :node_binary, "/usr/bin/node" unless exists? :node_binary
-  set :node_env, "production" unless exists? :node_env
-  set :node_user, "deploy" unless exists? :node_user
-  set :pid_file, "#{application}.pid" unless exists? :pid_file
+  unless exists? :node_binary
+    set :node_binary, "/usr/bin/node"
+  end
+  unless exists? :node_env
+    set :node_env, "production"
+  end
+  unless exists? :node_user
+    set :node_user, "deploy"
+  end
+  unless exists? :pid_file
+    set :pid_file, "#{application}.pid"
+  end
 
   set :upstart_job_name, lambda { "#{application}-#{node_env}" } unless exists? :upstart_job_name
   set :upstart_file_path, lambda { "/etc/init/#{upstart_job_name}.conf" } unless exists? :upstart_file_path
